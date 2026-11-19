@@ -32,7 +32,7 @@ module OIDCProvider
 
       return nil unless client
 
-      client.redirect_uri.include?(req.redirect_uri) ? client : nil
+      Array(client.redirect_uri).include?(req.redirect_uri) ? client : nil
     end
   end
 end

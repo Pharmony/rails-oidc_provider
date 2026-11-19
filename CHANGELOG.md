@@ -13,11 +13,16 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   `lib/rails/oidc_provider.rb`). Host apps that only list
   `gem 'rails-oidc_provider'` and call `Bundler.require` no longer boot with
   `uninitialized constant OIDCProvider` in `config/initializers/oidc_provider.rb`.
+- `Client#redirect_uri=` normalizes input: one URI stays a String (rack-oauth2
+  may omit `redirect_uri` on the request), multiple stay an Array; token
+  matching uses `Array(redirect_uri).include?`.
 
 ### Added
 
 - Gem structure / packaging specs covering Bundler require paths, built `.gem`
   contents, and host-style loading of `OIDCProvider`.
+- Configuration unit specs for `OIDCProvider.configure`, clients, scopes,
+  lookups, `ClientStore`, and the `RailsOidcProvider` alias.
 
 ## [1.0.0] - 2026-03-26
 

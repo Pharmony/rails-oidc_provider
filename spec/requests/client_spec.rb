@@ -48,8 +48,8 @@ describe OIDCProvider::Client, type: :request do
       expect(OIDCProvider.clients.first.secret).to be_nil
     end
 
-    it 'clients contains one client with an emtpy `redirect_uri` attribute' do
-      expect(OIDCProvider.clients.first.redirect_uri).to be_empty
+    it 'clients contains one client with a nil `redirect_uri` attribute' do
+      expect(OIDCProvider.clients.first.redirect_uri).to be_nil
     end
 
     it 'clients contains one client with a `name` attribute being `nil`' do
@@ -81,8 +81,8 @@ describe OIDCProvider::Client, type: :request do
       expect(OIDCProvider.clients.first.secret).to be_present
     end
 
-    it 'clients contains one client with a `redirect_uri` attribute being an array' do
-      expect(OIDCProvider.clients.first.redirect_uri).not_to be_empty
+    it 'clients contains one client with a present `redirect_uri` attribute' do
+      expect(OIDCProvider.clients.first.redirect_uri).to be_present
     end
 
     it 'clients contains one client with a present `name` attribute' do
