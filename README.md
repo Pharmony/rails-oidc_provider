@@ -156,11 +156,22 @@ long-lived API keys.
    gem build rails-oidc_provider.gemspec
    gem push rails-oidc_provider-1.0.0.gem   # prompts for credentials / OTP
    ```
-3. On the gem’s RubyGems page → **Trusted Publishing** → add a GitHub provider:
-   - **Organization or user:** `pharmony`
-   - **Repository:** `rails-oidc_provider`
-   - **Workflow filename:** `release.yml`
-   - **Environment:** leave blank (unless you set `environment:` in the workflow)
+3. On the gem’s RubyGems page → **Trusted publishers** → add a GitHub provider.
+   Fields must match the OIDC claims from `.github/workflows/release.yml` exactly:
+   - **Organization or user:** `Pharmony` (GitHub owner; casing as on github.com)
+   - **Repository:** `rails-oidc_provider` (repo name only — not `Pharmony/…`)
+   - **Workflow filename:** `release.yml` (basename only — not a path)
+   - **Environment:** `release` (must match `environment: release` in the workflow)
+
+   Also create a GitHub Environment named `release`
+   (Settings → Environments) if it does not exist. No protection rules are
+   required for publishing to work; rules are optional extra gates.
+
+   Common misconfig that yields
+   `No trusted publisher configured for this workflow`:
+   - Environment set to `release` on RubyGems but missing on the workflow (or the reverse)
+   - Wrong repo name / owner casing / `owner/repo` stuffed into Repository
+   - Workflow filename with a path (`/.github/workflows/release.yml`)
 
 No `RUBYGEMS_API_KEY` secret is required when Trusted Publishing is configured.
 

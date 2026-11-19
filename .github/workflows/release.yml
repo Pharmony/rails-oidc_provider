@@ -5,10 +5,15 @@
 #   1. Create the gem on rubygems.org (or push once manually).
 #   2. Enable Trusted Publishing for this GitHub repo + workflow:
 #      https://guides.rubygems.org/trusted-publishing/
-#      - Repository: Pharmony/rails-oidc_provider
-#      - Workflow: release.yml
-#      - Environment: (leave empty unless you add `environment:` below)
+#      - Organization or user: Pharmony   (exact GitHub owner casing)
+#      - Repository: rails-oidc_provider  (name only, not owner/repo)
+#      - Workflow filename: release.yml   (basename only)
+#      - Environment: release             (MUST match `environment:` below)
 #   3. Tag and push: bin/release   # or: git tag v1.0.0 && git push origin v1.0.0
+#
+# A blank Environment on RubyGems only matches a job with NO `environment:`.
+# A value of "release" on RubyGems only matches `environment: release` here.
+# Mismatch → "No trusted publisher configured for this workflow".
 #
 # The tag must match lib/rails_oidc_provider/version.rb (e.g. v1.0.0 → 1.0.0).
 name: Release
@@ -18,14 +23,17 @@ on:
     tags:
       - 'v*'
 
-permissions:
-  contents: write # create GitHub Release + upload assets
-  id-token: write # RubyGems trusted publishing (OIDC)
-
 jobs:
   publish:
     name: Publish gem and GitHub Release
     runs-on: ubuntu-latest
+    # Must match the Environment field on the gem's Trusted Publisher.
+    # Official RubyGems guide uses "release"; create the same GitHub Environment
+    # under Settings → Environments if it does not exist yet.
+    environment: release
+    permissions:
+      contents: write # create GitHub Release + upload assets
+      id-token: write # RubyGems trusted publishing (OIDC)
     steps:
       - name: Checkout
         uses: actions/checkout@v4
