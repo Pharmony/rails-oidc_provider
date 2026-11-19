@@ -138,6 +138,57 @@ GitHub Actions (`.github/workflows/ci.yml`) on `master` PRs/pushes:
 - **RuboCop** — Ruby 3.3 / Rails 7.1
 - **Docker smoke** — `bin/test-matrix 3.3 7.1`
 
+## Releasing to RubyGems.org
+
+Publishing is done by CI when you push a version tag (`v*`). Prefer
+[Trusted Publishing](https://guides.rubygems.org/trusted-publishing/) (OIDC) over
+long-lived API keys.
+
+### One-time setup
+
+1. Create an account on [rubygems.org](https://rubygems.org) (enable MFA).
+2. Push the gem once if it does not exist yet (optional first bootstrap):
+   ```bash
+   gem build rails-oidc_provider.gemspec
+   gem push rails-oidc_provider-1.0.0.gem   # prompts for credentials / OTP
+   ```
+3. On the gem’s RubyGems page → **Trusted Publishing** → add a GitHub provider:
+   - **Organization or user:** `pharmony`
+   - **Repository:** `rails-oidc_provider`
+   - **Workflow filename:** `release.yml`
+   - **Environment:** leave blank (unless you set `environment:` in the workflow)
+
+No `RUBYGEMS_API_KEY` secret is required when Trusted Publishing is configured.
+
+### Cut a release
+
+1. Bump `RailsOidcProvider::VERSION` in `lib/rails_oidc_provider/version.rb`.
+2. Update `CHANGELOG.md` for that version.
+3. Commit and push `master`.
+4. Tag and push (triggers `.github/workflows/release.yml`):
+   ```bash
+   bin/release           # tags v$VERSION, pushes branch + tag
+   bin/release --dry-run # show what would run
+   ```
+   Equivalent manual steps:
+   ```bash
+   version=$(ruby -e "require_relative 'lib/rails_oidc_provider/version'; puts RailsOidcProvider::VERSION")
+   git tag -a "v${version}" -m "Release v${version}"
+   git push origin master
+   git push origin "v${version}"
+   ```
+5. Confirm the **Release** workflow is green and the version appears on
+   https://rubygems.org/gems/rails-oidc_provider
+
+The workflow fails if the tag (e.g. `v1.0.1`) does not match `VERSION` (`1.0.1`).
+
+### Local build only (no push)
+
+```bash
+bundle exec rake build    # writes pkg/rails-oidc_provider-*.gem
+bundle exec rake install  # install into local gems for smoke testing
+```
+
 ## License
 
 The gem is available as open source under the terms of the [MIT License](MIT-LICENSE).

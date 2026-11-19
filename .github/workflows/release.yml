@@ -1,0 +1,54 @@
+# Publishes rails-oidc_provider to RubyGems when a version tag is pushed.
+#
+# Setup (one-time):
+#   1. Create the gem on rubygems.org (or push once manually).
+#   2. Enable Trusted Publishing for this GitHub repo + workflow:
+#      https://guides.rubygems.org/trusted-publishing/
+#      - Repository: pharmony/rails-oidc_provider
+#      - Workflow: release.yml
+#      - Environment: (leave empty unless you add `environment:` below)
+#   3. Tag and push: bin/release   # or: git tag v1.0.0 && git push origin v1.0.0
+#
+# The tag must match lib/rails_oidc_provider/version.rb (e.g. v1.0.0 → 1.0.0).
+name: Release
+
+on:
+  push:
+    tags:
+      - 'v*'
+
+permissions:
+  contents: read
+  id-token: write # required for RubyGems trusted publishing (OIDC)
+
+jobs:
+  publish:
+    name: Publish to RubyGems.org
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Set up Ruby
+        uses: ruby/setup-ruby@v1
+        with:
+          ruby-version: '3.3'
+          bundler-cache: true
+
+      - name: Verify tag matches gem VERSION
+        run: |
+          set -euo pipefail
+          tag="${GITHUB_REF_NAME}"
+          expected="${tag#v}"
+          actual="$(ruby -e "require_relative 'lib/rails_oidc_provider/version'; puts RailsOidcProvider::VERSION")"
+          echo "tag=${tag} expected_version=${expected} gem_version=${actual}"
+          if [ "${expected}" != "${actual}" ]; then
+            echo "::error::Tag ${tag} does not match RailsOidcProvider::VERSION (${actual}). Update version.rb or retag."
+            exit 1
+          fi
+
+      - name: Build gem
+        run: bundle exec rake build
+
+      - name: Publish gem
+        uses: rubygems/release-gem@v1

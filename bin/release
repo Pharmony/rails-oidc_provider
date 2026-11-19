@@ -1,0 +1,56 @@
+#!/usr/bin/env bash
+# Tag the current VERSION and push so CI publishes to RubyGems.org.
+#
+# Prerequisites:
+#   - VERSION in lib/rails_oidc_provider/version.rb is correct
+#   - CHANGELOG.md has an entry for that version
+#   - Trusted Publishing is configured for .github/workflows/release.yml
+#   - Working tree is clean and master is pushed
+#
+# Usage:
+#   bin/release              # tags v$VERSION and pushes origin tag + HEAD
+#   bin/release --dry-run    # print actions only
+set -euo pipefail
+
+cd "$(dirname "$0")/.."
+
+DRY_RUN=0
+if [[ "${1:-}" == '--dry-run' ]]; then
+  DRY_RUN=1
+fi
+
+version="$(ruby -e "require_relative 'lib/rails_oidc_provider/version'; puts RailsOidcProvider::VERSION")"
+tag="v${version}"
+
+if [[ -z "${version}" ]]; then
+  echo "Could not read RailsOidcProvider::VERSION" >&2
+  exit 1
+fi
+
+if ! git diff --quiet || ! git diff --cached --quiet; then
+  echo "Working tree is dirty. Commit or stash before releasing." >&2
+  git status -sb >&2
+  exit 1
+fi
+
+if git rev-parse "${tag}" >/dev/null 2>&1; then
+  echo "Tag ${tag} already exists." >&2
+  exit 1
+fi
+
+branch="$(git branch --show-current)"
+echo "Release ${tag} from branch ${branch}"
+
+if [[ "${DRY_RUN}" -eq 1 ]]; then
+  echo "dry-run: git tag -a ${tag} -m \"Release ${tag}\""
+  echo "dry-run: git push origin HEAD"
+  echo "dry-run: git push origin ${tag}"
+  exit 0
+fi
+
+git tag -a "${tag}" -m "Release ${tag}"
+git push origin HEAD
+git push origin "${tag}"
+
+echo "Pushed ${tag}. Watch the Release workflow on GitHub for the RubyGems publish."
+echo "Gem page: https://rubygems.org/gems/rails-oidc_provider"
