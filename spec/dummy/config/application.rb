@@ -13,7 +13,9 @@ require 'rails_oidc_provider'
 
 module Dummy
   class Application < Rails::Application
-    config.load_defaults 7.0
+    # Match the major.minor under test (RAILS_VERSION matrix).
+    defaults = [Rails::VERSION::MAJOR, Rails::VERSION::MINOR].join('.').to_f
+    config.load_defaults defaults
     config.eager_load = false
     config.api_only = false
     config.secret_key_base = 'x' * 128

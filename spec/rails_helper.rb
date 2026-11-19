@@ -19,14 +19,26 @@ unless File.exist?(key_path)
 end
 
 # Dummy owns all test migrations under spec/dummy/db/migrate
-ActiveRecord::MigrationContext.new(
-  [Rails.root.join('db/migrate').to_s]
-).migrate
+migrate_paths = [Rails.root.join('db/migrate').to_s]
+ActiveRecord::Migrator.migrations_paths = migrate_paths
+
+begin
+  ActiveRecord::MigrationContext.new(migrate_paths).migrate
+rescue ArgumentError
+  # Rails 7.0 expects (paths, schema_migration)
+  ActiveRecord::MigrationContext.new(migrate_paths, ActiveRecord::SchemaMigration).migrate
+end
 
 Dir[File.expand_path('support/**/*.rb', __dir__)].each { |f| require f }
 
 RSpec.configure do |config|
-  config.fixture_paths = []
+  # fixture_paths= is Rails 7.1+ / newer rspec-rails; older stacks use fixture_path=
+  if config.respond_to?(:fixture_paths=)
+    config.fixture_paths = []
+  elsif config.respond_to?(:fixture_path=)
+    config.fixture_path = nil
+  end
+
   config.use_transactional_fixtures = true
   config.infer_spec_type_from_file_location!
   config.filter_rails_from_backtrace!

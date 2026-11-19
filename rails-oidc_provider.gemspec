@@ -32,6 +32,6 @@ Gem::Specification.new do |spec|
   spec.add_dependency 'openid_connect', '~> 2.2.0'
   spec.add_dependency 'rails', '>= 7.0'
 
+  # Dev/test gems (sqlite3 version is matrix-specific) live in the Gemfile.
   spec.add_development_dependency 'rspec-rails', '~> 6.0'
-  spec.add_development_dependency 'sqlite3', '>= 1.4'
 end

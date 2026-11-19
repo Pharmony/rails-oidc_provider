@@ -37,11 +37,14 @@ jobs:
         with:
           ruby-version: ${{ matrix.ruby }}
           bundler-cache: true
+          # Separate cache per Rails line so sqlite3 1.x/2.x do not collide.
+          cache-version: rails-${{ matrix.rails }}
 
       - name: Prepare dummy app
         run: |
-          bundle exec rake app:db:prepare
+          mkdir -p spec/dummy/db spec/dummy/lib spec/dummy/log spec/dummy/tmp
           bundle exec rake app:oidc_provider:generate_key
+          (cd spec/dummy && bundle exec rails db:drop db:create db:migrate)
 
       - name: RSpec
         run: bundle exec rspec
