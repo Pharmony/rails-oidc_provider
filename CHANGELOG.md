@@ -12,7 +12,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 First release of **`rails-oidc_provider`**, a maintained OpenID Connect provider
 engine for Rails. Historically derived from
 [brandnewbox/oidc_provider](https://github.com/brandnewbox/oidc_provider) and the
-accumulated community patches previously published on zedtux forks. This is a
+accumulated community patches previously published on Pharmony forks. This is a
 **new gem**, not an official continuation of the original project.
 
 The runtime Ruby API remains `OIDCProvider` for drop-in compatibility. A
@@ -50,5 +50,5 @@ The runtime Ruby API remains `OIDCProvider` for drop-in compatibility. A
   engine smoke tests removed).
 - Runtime dependency floor raised to Rails `>= 7.0` and Ruby `>= 3.1`.
 
-[Unreleased]: https://github.com/zedtux/rails-oidc_provider/compare/v1.0.0...HEAD
-[1.0.0]: https://github.com/zedtux/rails-oidc_provider/releases/tag/v1.0.0
+[Unreleased]: https://github.com/pharmony/rails-oidc_provider/compare/v1.0.0...HEAD
+[1.0.0]: https://github.com/pharmony/rails-oidc_provider/releases/tag/v1.0.0

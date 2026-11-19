@@ -5,8 +5,8 @@ require_relative 'lib/rails_oidc_provider/version'
 Gem::Specification.new do |spec|
   spec.name = 'rails-oidc_provider'
   spec.version = RailsOidcProvider::VERSION
-  spec.authors = ['Guillaume Hain']
-  spec.email = ['zedtux@zedroot.org']
+  spec.authors = ['Pharmony SA']
+  spec.email = ['dev@pharmony.eu']
 
   spec.summary = 'Rails engine that turns an application into an OpenID Connect provider.'
   spec.description = <<~DESC
