@@ -29,6 +29,10 @@ Add this line to your application's Gemfile:
 gem 'rails-oidc_provider'
 ```
 
+`Bundler.require` loads the engine automatically (hyphenated gem name maps to
+`rails-oidc_provider` / `rails/oidc_provider` entrypoints). You can also require
+explicitly with `require 'rails_oidc_provider'` or `require 'oidc_provider'`.
+
 Then:
 
 ```bash

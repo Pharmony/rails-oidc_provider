@@ -7,6 +7,18 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Fixed
+
+- Ship Bundler-default require entrypoints (`lib/rails-oidc_provider.rb` and
+  `lib/rails/oidc_provider.rb`). Host apps that only list
+  `gem 'rails-oidc_provider'` and call `Bundler.require` no longer boot with
+  `uninitialized constant OIDCProvider` in `config/initializers/oidc_provider.rb`.
+
+### Added
+
+- Gem structure / packaging specs covering Bundler require paths, built `.gem`
+  contents, and host-style loading of `OIDCProvider`.
+
 ## [1.0.0] - 2026-03-26
 
 First release of **`rails-oidc_provider`**, a maintained OpenID Connect provider

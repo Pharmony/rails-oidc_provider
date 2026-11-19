@@ -51,6 +51,11 @@ Naming/ConstantName:
   Exclude:
     - 'lib/oidc_provider.rb'
 
+# Bundler.require tries the gem name literally (hyphens) before slash form.
+Naming/FileName:
+  Exclude:
+    - 'lib/rails-oidc_provider.rb'
+
 # Transition alias file defines RailsOidcProvider + OIDCProvider::VERSION bridge.
 Style/OneClassPerFile:
   Exclude:
