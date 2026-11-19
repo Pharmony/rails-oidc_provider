@@ -177,10 +177,14 @@ No `RUBYGEMS_API_KEY` secret is required when Trusted Publishing is configured.
    git push origin master
    git push origin "v${version}"
    ```
-5. Confirm the **Release** workflow is green and the version appears on
-   https://rubygems.org/gems/rails-oidc_provider
+5. Confirm the **Release** workflow is green. It will:
+   - publish the gem to https://rubygems.org/gems/rails-oidc_provider
+   - create a **GitHub Release** for the tag whose notes are the matching
+     section extracted from `CHANGELOG.md` (and attach the built `.gem`)
 
-The workflow fails if the tag (e.g. `v1.0.1`) does not match `VERSION` (`1.0.1`).
+The workflow fails if the tag (e.g. `v1.0.1`) does not match `VERSION` (`1.0.1`),
+or if `CHANGELOG.md` has no `## [1.0.1]` heading (notes fall back to a short
+default message).
 
 ### Local build only (no push)
 

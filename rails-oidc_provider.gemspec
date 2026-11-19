@@ -14,7 +14,7 @@ Gem::Specification.new do |spec|
     derived from brandnewbox/oidc_provider. The public Ruby API remains
     OIDCProvider, with a RailsOidcProvider alias for the new gem identity.
   DESC
-  spec.homepage = 'https://github.com/zedtux/rails-oidc_provider'
+  spec.homepage = 'https://github.com/Pharmony/rails-oidc_provider'
   spec.license = 'MIT'
   spec.required_ruby_version = '>= 3.1'
 
