@@ -84,7 +84,7 @@ module OIDCProvider
       end
 
       def key_pair
-        @key_pair ||= OpenSSL::PKey::RSA.new(File.read(oidc_provider_key_path), ENV[PASSPHRASE_ENV_VAR])
+        @key_pair ||= OpenSSL::PKey::RSA.new(File.read(oidc_provider_key_path), ENV.fetch(PASSPHRASE_ENV_VAR, nil))
       end
 
       def private_jwk

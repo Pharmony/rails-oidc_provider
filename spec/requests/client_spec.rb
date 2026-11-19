@@ -33,7 +33,7 @@ describe OIDCProvider::Client, type: :request do
 
   context 'when calling add_client with a blank block' do
     before do
-      OIDCProvider.add_client {} # rubocop: Lint/EmptyBlock
+      OIDCProvider.add_client {} # rubocop:disable Lint/EmptyBlock
     end
 
     it 'adds a client' do
@@ -132,7 +132,7 @@ describe OIDCProvider::Client, type: :request do
           # Create an access_token from the authorization code
           post create_token_url(authorization_code, first_redirect_uri)
 
-          access_token = JSON.parse(response.body)['access_token']
+          access_token = response.parsed_body['access_token']
 
           # Fetch User information using the access_token
           get "#{one_test_server_url}/accounts/oauth/user_info", headers: {
@@ -146,23 +146,23 @@ describe OIDCProvider::Client, type: :request do
       end
 
       it "responds with a name containing the user's fullname" do
-        expect(JSON.parse(response.body)).to include('name' => "#{user[:first_name]} #{user[:last_name]}")
+        expect(response.parsed_body).to include('name' => "#{user[:first_name]} #{user[:last_name]}")
       end
 
       it "responds with a given_name containing the user's first_name" do
-        expect(JSON.parse(response.body)).to include('given_name' => user[:first_name])
+        expect(response.parsed_body).to include('given_name' => user[:first_name])
       end
 
       it "responds with a family_name containing the user's last_name" do
-        expect(JSON.parse(response.body)).to include('family_name' => user[:last_name])
+        expect(response.parsed_body).to include('family_name' => user[:last_name])
       end
 
       it "responds with a email containing the user's email" do
-        expect(JSON.parse(response.body)).to include('email' => user[:email])
+        expect(response.parsed_body).to include('email' => user[:email])
       end
 
       it 'responds with a email_verified being true' do
-        expect(JSON.parse(response.body)).to include('email_verified' => true)
+        expect(response.parsed_body).to include('email_verified' => true)
       end
     end
 
@@ -183,7 +183,7 @@ describe OIDCProvider::Client, type: :request do
           # Create an access_token from the authorization code
           post create_token_url(authorization_code, last_redirect_uri)
 
-          access_token = JSON.parse(response.body)['access_token']
+          access_token = response.parsed_body['access_token']
 
           # Fetch User information using the access_token
           get "#{one_test_server_url}/accounts/oauth/user_info", headers: {
@@ -197,23 +197,23 @@ describe OIDCProvider::Client, type: :request do
       end
 
       it "responds with a name containing the user's fullname" do
-        expect(JSON.parse(response.body)).to include('name' => "#{user[:first_name]} #{user[:last_name]}")
+        expect(response.parsed_body).to include('name' => "#{user[:first_name]} #{user[:last_name]}")
       end
 
       it "responds with a given_name containing the user's first_name" do
-        expect(JSON.parse(response.body)).to include('given_name' => user[:first_name])
+        expect(response.parsed_body).to include('given_name' => user[:first_name])
       end
 
       it "responds with a family_name containing the user's last_name" do
-        expect(JSON.parse(response.body)).to include('family_name' => user[:last_name])
+        expect(response.parsed_body).to include('family_name' => user[:last_name])
       end
 
       it "responds with a email containing the user's email" do
-        expect(JSON.parse(response.body)).to include('email' => user[:email])
+        expect(response.parsed_body).to include('email' => user[:email])
       end
 
       it 'responds with a email_verified being true' do
-        expect(JSON.parse(response.body)).to include('email_verified' => true)
+        expect(response.parsed_body).to include('email_verified' => true)
       end
     end
   end

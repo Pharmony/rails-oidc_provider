@@ -16,7 +16,7 @@ begin
   RSpec::Core::RakeTask.new(:spec)
   task default: :spec
 rescue LoadError
-  task :spec do
+  task spec: :environment do
     abort 'RSpec is not available. Run `bundle install` first.'
   end
   task default: :spec

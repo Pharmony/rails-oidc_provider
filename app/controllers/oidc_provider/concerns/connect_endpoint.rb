@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 module OIDCProvider
   module Concerns
     module ConnectEndpoint
@@ -20,21 +22,19 @@ module OIDCProvider
         request.env[Rack::OAuth2::Server::Rails::ERROR]
       end
 
-      def handle_oauth_error!(e)
-        if e.redirect?
-          raise e # NOTE: rack middleware should handle this error.
-        else
-          render plain: e.message, status: e.status
-        end
+      def handle_oauth_error!(error)
+        raise error if error.redirect?
+
+        # NOTE: rack middleware should handle this error.
+
+        render plain: error.message, status: error.status
       end
 
       def require_oauth_request
-        if oauth_error
-          raise oauth_error
-        end
-        unless oauth_request && oauth_response
-          raise 'should\'t happen'
-        end
+        raise oauth_error if oauth_error
+        return if oauth_request && oauth_response
+
+        raise 'should\'t happen'
       end
     end
   end

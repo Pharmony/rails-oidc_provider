@@ -268,7 +268,7 @@ describe 'Authentication Create', type: :request do
     end
 
     it 'responds with an token_type' do
-      expect(response.body).to match(/"token_type":"bearer"/)
+      expect(response.body).to include('"token_type":"bearer"')
     end
 
     it 'responds with an expires_in' do
@@ -276,7 +276,7 @@ describe 'Authentication Create', type: :request do
     end
 
     it "doesn't respond with an id_token" do
-      expect(response.body).not_to match(/"id_token":"[A-z0-9\-_.]+"/)
+      expect(response.body).not_to match(/"id_token":"[A-Za-z0-9\-_.]+"/)
     end
   end
 
@@ -289,7 +289,7 @@ describe 'Authentication Create', type: :request do
     end
 
     def decoded_id_token
-      id_token = JSON.parse(response.body)['id_token']
+      id_token = response.parsed_body['id_token']
       JSON::JWT.decode(id_token, OIDCProvider::IdToken.public_jwk)
     end
 
@@ -312,7 +312,7 @@ describe 'Authentication Create', type: :request do
     end
 
     it 'responds with an token_type' do
-      expect(response.body).to match(/"token_type":"bearer"/)
+      expect(response.body).to include('"token_type":"bearer"')
     end
 
     it 'responds with an expires_in' do
@@ -320,7 +320,7 @@ describe 'Authentication Create', type: :request do
     end
 
     it 'responds with an id_token' do
-      expect(response.body).to match(/"id_token":"[A-z0-9\-_.]+"/)
+      expect(response.body).to match(/"id_token":"[A-Za-z0-9\-_.]+"/)
     end
 
     it 'responds with an id_token containing the client_it as aud' do

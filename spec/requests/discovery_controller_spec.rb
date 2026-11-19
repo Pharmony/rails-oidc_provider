@@ -14,7 +14,7 @@ describe 'OpenID Discovery', type: :request do
       before { get "#{test_server_url}/.well-known/openid-configuration" }
 
       it 'returns the OpenID configuration' do
-        expect(JSON.parse(response.body).deep_symbolize_keys).to eql(
+        expect(response.parsed_body.deep_symbolize_keys).to eql(
           {
             authorization_endpoint: "#{test_server_url}/accounts/oauth/authorizations",
             claims_parameter_supported: true,
@@ -54,7 +54,7 @@ describe 'OpenID Discovery', type: :request do
       end
 
       it 'returns the OpenID configuration' do
-        expect(JSON.parse(response.body).deep_symbolize_keys).to eql(
+        expect(response.parsed_body.deep_symbolize_keys).to eql(
           {
             authorization_endpoint: "#{test_server_url}/accounts/oauth/authorizations",
             claims_parameter_supported: true,

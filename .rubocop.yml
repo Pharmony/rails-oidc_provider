@@ -3,6 +3,7 @@
 AllCops:
   NewCops: enable
   TargetRubyVersion: 3.1
+  SuggestExtensions: false
   Exclude:
     - 'vendor/**/*'
     - 'spec/dummy/db/schema.rb'
@@ -11,12 +12,16 @@ AllCops:
     - 'bin/**/*'
     - 'tmp/**/*'
 
-require:
+plugins:
   - rubocop-rails
   - rubocop-rspec
 
 Layout/LineLength:
   Max: 120
+  Exclude:
+    - 'spec/**/*'
+    - 'CHANGELOG.md'
+    - 'README.md'
 
 Metrics/BlockLength:
   Exclude:
@@ -37,6 +42,32 @@ Metrics/AbcSize:
 Metrics/ClassLength:
   Max: 200
 
+# mattr_accessor-backed configuration intentionally uses class variables.
+Style/ClassVars:
+  Enabled: false
+
+# OIDC scope names (OpenID, Profile, Email) are public API constants.
+Naming/ConstantName:
+  Exclude:
+    - 'lib/oidc_provider.rb'
+
+# Transition alias file defines RailsOidcProvider + OIDCProvider::VERSION bridge.
+Style/OneClassPerFile:
+  Exclude:
+    - 'lib/rails_oidc_provider.rb'
+
+# Development gems are declared in the Gemfile for the Rails matrix.
+Gemspec/DevelopmentDependencies:
+  Enabled: false
+
+# Ported request specs use before(:all) for expensive OIDC client setup.
+RSpec/BeforeAfterAll:
+  Enabled: false
+
+# Request specs live under spec/requests/, not mirror constant paths.
+RSpec/SpecFilePathFormat:
+  Enabled: false
+
 RSpec/ExampleLength:
   Max: 30
 
@@ -51,6 +82,14 @@ Style/Documentation:
 
 Style/StringLiterals:
   EnforcedStyle: single_quotes
+
+Naming/MethodParameterName:
+  AllowedNames:
+    - as
+    - id
+    - to
+    - io
+    - e
 
 Rails/ApplicationController:
   Exclude:

@@ -6,7 +6,7 @@
 #   bin/test-matrix 3.2 7.2                 # one pair
 #   bin/test-matrix --all                   # full supported matrix
 #   bin/test-matrix --rubocop 3.3 7.1       # rspec + rubocop
-#   RAILS_VERSION=8.0 RUBY_VERSION=3.3 bin/test-matrix
+#   MATRIX_RUBY=3.3 MATRIX_RAILS=8.0 bin/test-matrix
 set -euo pipefail
 
 cd "$(dirname "$0")/.."
@@ -32,6 +32,26 @@ RUN_RUBOCOP=0
 RUN_ALL=0
 PAIRS=()
 
+# Normalize values like "ruby-3.4.4" or "3.4.4" -> "3.4" (major.minor for MRI images).
+normalize_ruby() {
+  local v="${1:-}"
+  v="${v#ruby-}"
+  if [[ "$v" =~ ^([0-9]+\.[0-9]+) ]]; then
+    printf '%s\n' "${BASH_REMATCH[1]}"
+  else
+    printf '%s\n' "$v"
+  fi
+}
+
+normalize_rails() {
+  local v="${1:-}"
+  if [[ "$v" =~ ^([0-9]+\.[0-9]+) ]]; then
+    printf '%s\n' "${BASH_REMATCH[1]}"
+  else
+    printf '%s\n' "$v"
+  fi
+}
+
 usage() {
   sed -n '2,12p' "$0"
   exit "${1:-0}"
@@ -55,12 +75,23 @@ done
 if [[ "$RUN_ALL" -eq 1 ]]; then
   PAIRS=("${ALL_PAIRS[@]}")
 elif [[ $# -ge 2 ]]; then
-  PAIRS=("$1:$2")
+  PAIRS=("$(normalize_ruby "$1"):$(normalize_rails "$2")")
 elif [[ $# -eq 1 ]]; then
-  echo "Provide both RUBY_VERSION and RAILS_VERSION, or use --all" >&2
+  echo "Provide both RUBY and RAILS versions, or use --all" >&2
   usage 1
 else
-  PAIRS=("${RUBY_VERSION:-$DEFAULT_RUBY}:${RAILS_VERSION:-$DEFAULT_RAILS}")
+  # Prefer MATRIX_* so host RUBY_VERSION from rbenv/asdf is ignored.
+  ruby_default="$(normalize_ruby "${MATRIX_RUBY:-${RUBY_VERSION:-$DEFAULT_RUBY}}")"
+  rails_default="$(normalize_rails "${MATRIX_RAILS:-${RAILS_VERSION:-$DEFAULT_RAILS}}")"
+  case "$ruby_default" in
+    3.1|3.2|3.3) ;;
+    *) ruby_default="$DEFAULT_RUBY" ;;
+  esac
+  case "$rails_default" in
+    7.0|7.1|7.2|8.0) ;;
+    *) rails_default="$DEFAULT_RAILS" ;;
+  esac
+  PAIRS=("${ruby_default}:${rails_default}")
 fi
 
 failures=0
@@ -85,6 +116,7 @@ for pair in "${PAIRS[@]}"; do
   if ! docker run --rm \
       -e OIDC_PROVIDER_KEY_PASSPHRASE=test-passphrase \
       -e APP_HOST=www.example.com \
+      -e "RAILS_VERSION=${rails_v}" \
       "$tag" bundle exec rspec; then
     echo "RSPEC FAILED: ${pair}" >&2
     failures=$((failures + 1))
@@ -92,7 +124,11 @@ for pair in "${PAIRS[@]}"; do
   fi
 
   if [[ "$RUN_RUBOCOP" -eq 1 ]]; then
-    if ! docker run --rm "$tag" bundle exec rubocop; then
+    if ! docker run --rm \
+        -e OIDC_PROVIDER_KEY_PASSPHRASE=test-passphrase \
+        -e APP_HOST=www.example.com \
+        -e "RAILS_VERSION=${rails_v}" \
+        "$tag" bundle exec rubocop; then
       echo "RUBOCOP FAILED: ${pair}" >&2
       failures=$((failures + 1))
       continue

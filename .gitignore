@@ -22,3 +22,4 @@ spec/dummy/storage/
 .ruby-version
 .ruby-gemset
 .DS_Store
+spec/dummy/db/schema.rb

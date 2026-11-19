@@ -45,20 +45,21 @@ module OIDCProvider
       return true unless oauth_request.claims
 
       validate_json_is_a_hash!(parse_claims_as_json!)
-    rescue Errors::InvalidClaimsFormatError => error
-      Rails.logger.error "Invalid claims passed: #{error.message}"
+    rescue Errors::InvalidClaimsFormatError => e
+      Rails.logger.error "Invalid claims passed: #{e.message}"
       oauth_request.invalid_request! 'invalid claims format'
     end
 
     def parse_claims_as_json!
       JSON.parse(oauth_request.claims)
-    rescue JSON::ParserError => error
-      Rails.logger.error "Invalid claims passed: #{error.message}"
+    rescue JSON::ParserError => e
+      Rails.logger.error "Invalid claims passed: #{e.message}"
       oauth_request.invalid_request! 'claims just be a JSON'
     end
 
     def require_client
-      @client = ClientStore.new.find_by(identifier: oauth_request.client_id) or oauth_request.invalid_request! 'not a valid client'
+      @client = ClientStore.new.find_by(identifier: oauth_request.client_id) ||
+                oauth_request.invalid_request!('not a valid client')
       @redirect_uri = oauth_request.verify_redirect_uri! @client.redirect_uri
     end
 
@@ -74,13 +75,13 @@ module OIDCProvider
     end
 
     def reset_login_if_necessary
-      if params[:prompt] == "login"
-        # A `prompt=login` param means that we must prompt the user for sign in.
-        # So we will forcibly sign out the user here and then redirect them so they
-        # don't get redirected back to the url that contains `prompt=login`
-        unauthenticate!
-        redirect_to url_for(request.query_parameters.except(:prompt))
-      end
+      return unless params[:prompt] == 'login'
+
+      # A `prompt=login` param means that we must prompt the user for sign in.
+      # So we will forcibly sign out the user here and then redirect them so they
+      # don't get redirected back to the url that contains `prompt=login`
+      unauthenticate!
+      redirect_to url_for(request.query_parameters.except(:prompt))
     end
 
     # Recursive method validating the given `json` is a hash of hashes

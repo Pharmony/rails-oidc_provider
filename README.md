@@ -105,9 +105,12 @@ bin/test-matrix
 bin/test-matrix 3.2 7.2
 bin/test-matrix --rubocop 3.3 7.1
 
-# Compose equivalent
-RUBY_VERSION=3.2 RAILS_VERSION=7.2 docker compose build test
-RUBY_VERSION=3.2 RAILS_VERSION=7.2 docker compose run --rm test
+# Compose equivalent (MATRIX_* avoids clashing with host rbenv RUBY_VERSION)
+MATRIX_RUBY=3.2 MATRIX_RAILS=7.2 docker compose build test
+MATRIX_RUBY=3.2 MATRIX_RAILS=7.2 docker compose run --rm test
+
+# RuboCop in the test image
+docker compose run --rm test bundle exec rubocop
 ```
 
 ### Full local matrix

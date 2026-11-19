@@ -6,7 +6,7 @@ require 'rails_helper'
 # whose value is an array of JWK objects — never a bare array of JWKs.
 describe 'JWKS endpoint', type: :request do
   let(:url) { "#{test_server_url}/accounts/oauth/jwks.json" }
-  let(:body) { JSON.parse(response.body) }
+  let(:body) { response.parsed_body }
 
   before { get url }
 

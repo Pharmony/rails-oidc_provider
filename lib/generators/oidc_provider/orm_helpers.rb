@@ -21,7 +21,8 @@ module OIDCProvider
       # end
 
       # def migration_exists?(table_name)
-      #   Dir.glob("#{File.join(destination_root, migration_path)}/[0-9]*_*.rb").grep(/\d+_add_devise_to_#{table_name}.rb$/).first
+      #   pattern = /\d+_add_devise_to_#{table_name}.rb$/
+      #   Dir.glob("#{File.join(destination_root, migration_path)}/[0-9]*_*.rb").grep(pattern).first
       # end
 
       def migration_path

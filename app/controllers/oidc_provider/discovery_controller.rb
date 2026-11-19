@@ -53,7 +53,7 @@ module OIDCProvider
       if uri.host
         opts[:host] = uri.host
         opts[:protocol] = uri.scheme if uri.scheme
-        opts[:port] = uri.port if uri.port && ![80, 443].include?(uri.port)
+        opts[:port] = uri.port if uri.port && [80, 443].exclude?(uri.port)
       else
         opts[:host] = OIDCProvider.issuer
       end

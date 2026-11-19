@@ -92,7 +92,9 @@ describe 'Authentication Fetch', type: :request do
   end
 
   context 'when redirect_uri is an Array, when passing a valid client_id and a supported response_type while being authenticated but without a redirect_uri' do
-    let(:url) { "#{one_test_server_url}/accounts/oauth/authorizations?client_id=#{client.identifier}&response_type=code" }
+    let(:url) do
+      "#{one_test_server_url}/accounts/oauth/authorizations?client_id=#{client.identifier}&response_type=code"
+    end
 
     before do
       OIDCProvider.configure do |config|
@@ -118,7 +120,9 @@ describe 'Authentication Fetch', type: :request do
   end
 
   context 'when passing a valid client_id, a supported response_type but wrong redirect_uri while being authenticated' do
-    let(:url) { "#{one_test_server_url}/accounts/oauth/authorizations?client_id=#{client_id}&response_type=code&redirect_uri=http://another.domain/callback" }
+    let(:url) do
+      "#{one_test_server_url}/accounts/oauth/authorizations?client_id=#{client_id}&response_type=code&redirect_uri=http://another.domain/callback"
+    end
 
     before { login_and_logout_with_warden { get url } }
 
@@ -132,7 +136,9 @@ describe 'Authentication Fetch', type: :request do
   end
 
   context 'when passing a valid client_id, a supported response_type and an empty redirect_uri' do
-    let(:url) { "#{one_test_server_url}/accounts/oauth/authorizations?client_id=#{client_id}&response_type=code&redirect_uri=" }
+    let(:url) do
+      "#{one_test_server_url}/accounts/oauth/authorizations?client_id=#{client_id}&response_type=code&redirect_uri="
+    end
 
     before { get url }
 
@@ -146,7 +152,9 @@ describe 'Authentication Fetch', type: :request do
   end
 
   context 'when passing a valid client_id, a supported response_type, a matching redirect_uri but not being authenticated' do
-    let(:url) { "#{one_test_server_url}/accounts/oauth/authorizations?client_id=#{client_id}&response_type=code&redirect_uri=#{redirect_uri}" }
+    let(:url) do
+      "#{one_test_server_url}/accounts/oauth/authorizations?client_id=#{client_id}&response_type=code&redirect_uri=#{redirect_uri}"
+    end
 
     before { get url }
 
@@ -160,7 +168,9 @@ describe 'Authentication Fetch', type: :request do
   end
 
   context 'when passing a valid client_id, a supported response_type and a redirect_uri while being authenticated' do
-    let(:url) { "#{one_test_server_url}/accounts/oauth/authorizations?client_id=#{client_id}&response_type=code&redirect_uri=#{redirect_uri}" }
+    let(:url) do
+      "#{one_test_server_url}/accounts/oauth/authorizations?client_id=#{client_id}&response_type=code&redirect_uri=#{redirect_uri}"
+    end
 
     before { login_and_logout_with_warden { get url } }
 

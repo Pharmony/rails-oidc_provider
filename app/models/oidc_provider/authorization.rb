@@ -2,9 +2,10 @@
 
 module OIDCProvider
   class Authorization < ApplicationRecord
-    belongs_to :account, class_name: OIDCProvider.account_class
-    has_one :access_token
-    has_one :id_token
+    # account_class is configurable (default "User"); cannot be a string literal.
+    belongs_to :account, class_name: OIDCProvider.account_class # rubocop:disable Rails/ReflectionClassName
+    has_one :access_token, dependent: :destroy
+    has_one :id_token, dependent: :destroy
 
     scope :valid, -> { where(arel_table[:expires_at].gteq(Time.now.utc)) }
 
@@ -37,7 +38,7 @@ module OIDCProvider
     end
 
     def expire!
-      self.expires_at = Time.now
+      self.expires_at = Time.zone.now
 
       save!
     end

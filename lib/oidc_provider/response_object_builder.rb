@@ -10,8 +10,8 @@ module OIDCProvider
       @response_object = response_object
     end
 
-    def run(&block)
-      instance_exec(@context, &block)
+    def run(&)
+      instance_exec(@context, &)
     end
 
     def method_missing(sym, *args) # rubocop:disable Style/MissingRespondToMissing

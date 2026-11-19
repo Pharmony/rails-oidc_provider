@@ -13,7 +13,7 @@ module OIDCProvider
         @client
       end
 
-      [:identifier, :secret, :redirect_uri, :name].each do |attr|
+      %i[identifier secret redirect_uri name].each do |attr|
         define_method attr do |val|
           @client.send("#{attr}=", val)
         end
