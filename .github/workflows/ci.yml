@@ -1,0 +1,73 @@
+name: CI
+
+on:
+  push:
+    branches: [master]
+  pull_request:
+    branches: [master]
+
+jobs:
+  test:
+    name: RSpec Ruby ${{ matrix.ruby }} / Rails ${{ matrix.rails }}
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - { ruby: '3.1', rails: '7.0' }
+          - { ruby: '3.2', rails: '7.0' }
+          - { ruby: '3.3', rails: '7.0' }
+          - { ruby: '3.1', rails: '7.1' }
+          - { ruby: '3.2', rails: '7.1' }
+          - { ruby: '3.3', rails: '7.1' }
+          - { ruby: '3.2', rails: '7.2' }
+          - { ruby: '3.3', rails: '7.2' }
+          - { ruby: '3.2', rails: '8.0' }
+          - { ruby: '3.3', rails: '8.0' }
+    env:
+      OIDC_PROVIDER_KEY_PASSPHRASE: test-passphrase
+      APP_HOST: www.example.com
+      RAILS_ENV: test
+      RAILS_VERSION: ${{ matrix.rails }}
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Set up Ruby
+        uses: ruby/setup-ruby@v1
+        with:
+          ruby-version: ${{ matrix.ruby }}
+          bundler-cache: true
+
+      - name: Prepare dummy app
+        run: |
+          bundle exec rake app:db:prepare
+          bundle exec rake app:oidc_provider:generate_key
+
+      - name: RSpec
+        run: bundle exec rspec
+
+  lint:
+    name: RuboCop
+    runs-on: ubuntu-latest
+    env:
+      RAILS_VERSION: '7.1'
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Set up Ruby
+        uses: ruby/setup-ruby@v1
+        with:
+          ruby-version: '3.3'
+          bundler-cache: true
+
+      - name: RuboCop
+        run: bundle exec rubocop
+
+  docker:
+    name: Docker smoke (3.3 / 7.1)
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Build and test
+        run: bin/test-matrix 3.3 7.1

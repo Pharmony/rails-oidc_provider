@@ -1,0 +1,61 @@
+# frozen_string_literal: true
+
+AllCops:
+  NewCops: enable
+  TargetRubyVersion: 3.1
+  Exclude:
+    - 'vendor/**/*'
+    - 'spec/dummy/db/schema.rb'
+    - 'spec/dummy/bin/**/*'
+    - 'spec/dummy/node_modules/**/*'
+    - 'bin/**/*'
+    - 'tmp/**/*'
+
+require:
+  - rubocop-rails
+  - rubocop-rspec
+
+Layout/LineLength:
+  Max: 120
+
+Metrics/BlockLength:
+  Exclude:
+    - 'spec/**/*'
+    - 'rails-oidc_provider.gemspec'
+    - 'Rakefile'
+
+Metrics/MethodLength:
+  Max: 20
+  Exclude:
+    - 'spec/**/*'
+
+Metrics/AbcSize:
+  Max: 25
+  Exclude:
+    - 'spec/**/*'
+
+Metrics/ClassLength:
+  Max: 200
+
+RSpec/ExampleLength:
+  Max: 30
+
+RSpec/MultipleExpectations:
+  Max: 5
+
+RSpec/NestedGroups:
+  Max: 5
+
+Style/Documentation:
+  Enabled: false
+
+Style/StringLiterals:
+  EnforcedStyle: single_quotes
+
+Rails/ApplicationController:
+  Exclude:
+    - 'spec/dummy/**/*'
+
+Rails/RakeEnvironment:
+  Exclude:
+    - 'lib/tasks/**/*'

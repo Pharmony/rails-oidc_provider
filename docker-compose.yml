@@ -1,0 +1,22 @@
+# Usage:
+#   docker compose run --rm test
+#   RUBY_VERSION=3.2 RAILS_VERSION=7.2 docker compose build test
+#   RUBY_VERSION=3.2 RAILS_VERSION=7.2 docker compose run --rm test
+#   docker compose run --rm test bundle exec rubocop
+services:
+  test:
+    build:
+      context: .
+      args:
+        RUBY_VERSION: ${RUBY_VERSION:-3.3}
+        RAILS_VERSION: ${RAILS_VERSION:-7.1}
+    image: rails-oidc_provider-test:${RUBY_VERSION:-3.3}-rails${RAILS_VERSION:-7.1}
+    environment:
+      RAILS_ENV: test
+      APP_HOST: www.example.com
+      OIDC_PROVIDER_KEY_PASSPHRASE: test-passphrase
+      RAILS_VERSION: ${RAILS_VERSION:-7.1}
+    # Do not mount the whole tree by default: the image already has gems installed
+    # for the chosen RAILS_VERSION. Mount when iterating on code:
+    #   docker compose run --rm -v "$PWD:/app" test
+    command: bundle exec rspec
