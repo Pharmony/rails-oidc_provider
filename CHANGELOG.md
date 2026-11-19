@@ -7,6 +7,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [1.0.1] - 2026-03-26
+
 ### Fixed
 
 - Ship Bundler-default require entrypoints (`lib/rails-oidc_provider.rb` and
@@ -67,5 +69,6 @@ The runtime Ruby API remains `OIDCProvider` for drop-in compatibility. A
   engine smoke tests removed).
 - Runtime dependency floor raised to Rails `>= 7.0` and Ruby `>= 3.1`.
 
-[Unreleased]: https://github.com/pharmony/rails-oidc_provider/compare/v1.0.0...HEAD
+[Unreleased]: https://github.com/pharmony/rails-oidc_provider/compare/v1.0.1...HEAD
+[1.0.1]: https://github.com/pharmony/rails-oidc_provider/compare/v1.0.0...v1.0.1
 [1.0.0]: https://github.com/pharmony/rails-oidc_provider/releases/tag/v1.0.0
